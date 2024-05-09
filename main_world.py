@@ -30,7 +30,7 @@ while True:
     # Game panel
     pygame.draw.rect(window, WHITE, (0, top_panel, width, height - top_panel))
 
-    dot.move()
+    dot.update  ()
     dot.show()
 
     pygame.display.flip()

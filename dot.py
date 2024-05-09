@@ -10,7 +10,7 @@ class Dot:
         self.velocity = np.array([0.0, 0.0])
         self.acceleration = np.array([0.0, 0.0])
         self.brain = None
-        self.max_speed = 3
+        self.max_speed = 1
         self.dead = False
         self.reached_goal = False
         self.is_best = False
@@ -28,7 +28,14 @@ class Dot:
         self.velocity = np.clip(self.velocity, -self.max_speed, self.max_speed)
         
         self.position += self.velocity
-        # Delimita a area em que o ponto ira andar 50 é do painel superior
-        self.position = np.clip(self.position, [self.dot_width, self.dot_width + 50], [self.window.get_width() - self.dot_width, self.window.get_height() - self.dot_width])
+
+    def update(self):
+        position_x = self.position[0]
+        position_y = self.position[1]
+        if not self.dead and not self.reached_goal:
+            self.move()
+            # Verifica colisão com as bordas
+            if (position_x < 0) or (position_y < 50) or (position_y > self.window.get_height()) or (position_x > self.window.get_width()):
+                self.dead = True
 
 
