@@ -1,6 +1,7 @@
 import pygame
 import sys
 from dot import Dot
+from population import Population
 
 pygame.init()
 
@@ -14,7 +15,7 @@ GRAY = (200, 200, 200)
 window = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Happy Dots AI - Fun Project")
 
-dot = Dot(window)
+population = Population(window, 100)
 
 while True:
 
@@ -30,7 +31,7 @@ while True:
     # Game panel
     pygame.draw.rect(window, WHITE, (0, top_panel, width, height - top_panel))
 
-    dot.update  ()
-    dot.show()
+    population.update()
+    population.show()
 
     pygame.display.flip()
