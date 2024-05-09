@@ -7,14 +7,12 @@ class Dot:
     def __init__(self, window):
         self.dot_width = 4
         self.window = window
-        self.position = [window.get_width() / 2, window.get_height() / 2]
+        self.position = [window.get_width() / 2, window.get_height() - 100]
         self.velocity = np.array([0.0, 0.0])
         self.acceleration = np.array([0.0, 0.0])
-        self.brain = None
         self.max_speed = 1
         self.dead = False
         self.reached_goal = False
-        self.is_best = False
         self.fitness = 0
 
     def show(self):
@@ -33,13 +31,25 @@ class Dot:
     def update(self):
         position_x = self.position[0]
         position_y = self.position[1]
-        if not self.dead and not self.reached_goal:
+        if self.check_edges_collision(position_x, position_y):
+            self.dead = True
+        if not self.dead and self.check_goal_collision(position_x, position_y):
+            self.reached_goal = True
+
+        if not self.dead and not self.reached_goal:        
             self.move()
-            # Verifica colisão com as bordas
-            if self.check_edges_collision(position_x, position_y):
-                self.dead = True
-            if self.check_goal_collision(position_x, position_y):
-                self.reached_goal = True
+
+    def calculate_fitness(self):
+        dot_x, dot_y = self.position[0], self.position[1]
+        goal_x = 400
+        goal_y = 60
+        radius_goal = 8
+        radius_dot = self.dot_width
+
+        distance = math.sqrt((dot_x - goal_x) ** 2 + (dot_y - goal_y) ** 2)
+        # Calcular a distancia entre os Dots e Goal, quanto menor, maior a pontuação
+        self.fitness = distance - radius_dot - radius_goal
+        print(self.fitness)
 
     def check_edges_collision(self, dot_x, dot_y):
         if (dot_x < 0) or (dot_y < 50) or (dot_y > self.window.get_height()) or (dot_x > self.window.get_width()):
