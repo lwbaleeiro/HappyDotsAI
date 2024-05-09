@@ -36,13 +36,18 @@ class Dot:
         if not self.dead and not self.reached_goal:
             self.move()
             # Verifica colisão com as bordas
-            if (position_x < 0) or (position_y < 50) or (position_y > self.window.get_height()) or (position_x > self.window.get_width()):
+            if self.check_edges_collision(position_x, position_y):
                 self.dead = True
-            if self.check_collision(position_x, position_y):
+            if self.check_goal_collision(position_x, position_y):
                 self.reached_goal = True
-                print(f"goal")
 
-    def check_collision(self, dot_x, dot_y):
+    def check_edges_collision(self, dot_x, dot_y):
+        if (dot_x < 0) or (dot_y < 50) or (dot_y > self.window.get_height()) or (dot_x > self.window.get_width()):
+            return True
+        else:
+            return False
+
+    def check_goal_collision(self, dot_x, dot_y):
         goal_x = 400
         goal_y = 60
         radius_goal = 8
