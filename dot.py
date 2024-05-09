@@ -1,6 +1,7 @@
 import pygame
 import random
 import numpy as np
+import math
 
 class Dot:
     def __init__(self, window):
@@ -37,5 +38,19 @@ class Dot:
             # Verifica colisão com as bordas
             if (position_x < 0) or (position_y < 50) or (position_y > self.window.get_height()) or (position_x > self.window.get_width()):
                 self.dead = True
+            if self.check_collision(position_x, position_y):
+                self.reached_goal = True
+                print(f"goal")
 
+    def check_collision(self, dot_x, dot_y):
+        goal_x = 400
+        goal_y = 60
+        radius_goal = 8
+        radius_dot = self.dot_width
+
+        distance = math.sqrt((dot_x - goal_x) ** 2 + (dot_y - goal_y) ** 2)
+        if distance <= radius_goal + radius_dot:
+            return True
+        else:
+            return False
 

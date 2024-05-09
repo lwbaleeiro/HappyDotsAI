@@ -1,6 +1,6 @@
 import pygame
 import sys
-from dot import Dot
+from goal import Goal
 from population import Population
 
 pygame.init()
@@ -16,6 +16,7 @@ window = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Happy Dots AI - Fun Project")
 
 population = Population(window, 100)
+goal = Goal(window)
 
 while True:
 
@@ -30,6 +31,7 @@ while True:
     pygame.draw.rect(window, GRAY, (0, 0, width, top_panel))
     # Game panel
     pygame.draw.rect(window, WHITE, (0, top_panel, width, height - top_panel))
+    goal.show()
 
     population.update()
     population.show()
