@@ -15,9 +15,14 @@ class Dot:
         self.dead = False
         self.reached_goal = False
         self.fitness = 0
+        self.is_best = False
 
     def show(self):
-        pygame.draw.circle(self.window, (0, 0, 0), (int(self.position[0]), int(self.position[1])), self.dot_width)
+        color = (0, 0, 0)
+        if self.is_best:
+            color = (0, 128, 0)
+
+        pygame.draw.circle(self.window, color, (int(self.position[0]), int(self.position[1])), self.dot_width)
 
     def move(self):
         next_acceleration = self.brain.get_next_acceleration()
@@ -53,7 +58,6 @@ class Dot:
         # Calcular a distancia entre os Dots e Goal, quanto menor, maior a pontuação
         distance = math.sqrt((dot_x - goal_x) ** 2 + (dot_y - goal_y) ** 2)
         self.fitness = distance - radius_dot - radius_goal
-        print(f"distance: {distance} / fitness: {self.fitness}")
 
     def check_edges_collision(self, dot_x, dot_y):
         if (dot_x < 0) or (dot_y < 50) or (dot_y > self.window.get_height()) or (dot_x > self.window.get_width()):
@@ -73,8 +77,15 @@ class Dot:
         else:
             return False
         
-    def clonar(self, brain):
-        dot = Dot(self.window)
-        dot.brain = brain
+    def reproduce(self):
+        # O filho ira receber as mesmas coordenadas do cérebro do pai
+        new_dot = Dot(self.window)
+        new_dot.brain.clone(self.brain)
+
+        return new_dot
+
+
+        
+       
 
 
