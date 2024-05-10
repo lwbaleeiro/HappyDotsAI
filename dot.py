@@ -1,7 +1,7 @@
 import pygame
-import random
 import numpy as np
 import math
+from brain import Brain
 
 class Dot:
     def __init__(self, window):
@@ -10,7 +10,8 @@ class Dot:
         self.position = [window.get_width() / 2, window.get_height() - 100]
         self.velocity = np.array([0.0, 0.0])
         self.acceleration = np.array([0.0, 0.0])
-        self.max_speed = 1
+        self.brain = Brain(1000)
+        self.max_speed = 3
         self.dead = False
         self.reached_goal = False
         self.fitness = 0
@@ -19,11 +20,14 @@ class Dot:
         pygame.draw.circle(self.window, (0, 0, 0), (int(self.position[0]), int(self.position[1])), self.dot_width)
 
     def move(self):
-        
-        self.acceleration = np.array([random.uniform(-0.1, 0.1), random.uniform(-0.1, 0.1)])
+        next_acceleration = self.brain.get_next_acceleration()
+
+        if np.any(next_acceleration) != None:
+            self.acceleration = next_acceleration
+        else:
+            self.dead = True
 
         self.velocity += self.acceleration
-        # np.clip limita um valor entre um range de valores.
         self.velocity = np.clip(self.velocity, -self.max_speed, self.max_speed)
         
         self.position += self.velocity
