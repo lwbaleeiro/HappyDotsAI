@@ -50,10 +50,10 @@ class Dot:
         radius_goal = 8
         radius_dot = self.dot_width
 
-        distance = math.sqrt((dot_x - goal_x) ** 2 + (dot_y - goal_y) ** 2)
         # Calcular a distancia entre os Dots e Goal, quanto menor, maior a pontuação
+        distance = math.sqrt((dot_x - goal_x) ** 2 + (dot_y - goal_y) ** 2)
         self.fitness = distance - radius_dot - radius_goal
-        print(self.fitness)
+        print(f"distance: {distance} / fitness: {self.fitness}")
 
     def check_edges_collision(self, dot_x, dot_y):
         if (dot_x < 0) or (dot_y < 50) or (dot_y > self.window.get_height()) or (dot_x > self.window.get_width()):
@@ -72,4 +72,9 @@ class Dot:
             return True
         else:
             return False
+        
+    def clonar(self, brain):
+        dot = Dot(self.window)
+        dot.brain = brain
+
 

@@ -1,5 +1,4 @@
 import numpy as np
-import random
 
 class Brain:
 
@@ -17,7 +16,7 @@ class Brain:
 
 
     def get_next_acceleration(self):
-        # Cada passo é reproduzido e limitado ao tamanho de "self.directions"
+        # Cada passo é reproduzido e limitado ao tamanho de "self.directions" junto com size
         if self.step < len(self.directions):
             acceleration = self.directions[self.step]
             self.step += 1
