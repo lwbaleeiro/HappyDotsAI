@@ -33,7 +33,7 @@ pygame.display.set_caption("Happy Dots AI - Fun Project")
 paused = False
 clock = pygame.time.Clock()
 
-population = Population(window, 100) # corrigir bug. não funciona corretamente com numeros impar
+population = Population(window, 2) # corrigir bug. não funciona corretamente com numeros impar
 goal = Goal(window)
 
 while True:

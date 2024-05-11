@@ -8,42 +8,42 @@ class Population:
         self.best_fitness = 0
         self.qtd_alives = size
         self.qtd_reached_goal = 0
+        self.sum_fitness_population = 0
 
         self.dots = []
 
         for _ in range(size):
             self.dots.append(Dot(window))
 
-    def __get_best_dot(self):
-        best_dot = None
-
-        for dot in self.dots:
-            if dot.fitness > self.best_fitness:
-                self.best_fitness = dot.fitness
-                best_dot = dot
-        
-        best_dot.is_best = True
-        return best_dot
-
     def __calculate_population_fitness(self):
+        sum_fitness = 0
+        
         for dot in self.dots:
             dot.calculate_fitness()
-    
-    def __sum_population_fitness(self):
-        sum_fitness = 0
-        for dot in self.dots:
             sum_fitness += dot.fitness
 
-        return sum_fitness
+        self.sum_fitness_population = sum_fitness
+
+    def __get_best_dot(self):
+        best_dot = None
+        best_fitness = 0
+
+        for dot in self.dots:
+            if dot.fitness > best_fitness:
+                best_fitness = dot.fitness
+                best_dot = dot
+        
+        self.best_fitness = best_fitness
+        best_dot.is_best = True
+        return best_dot.reproduce()
         
     def __select_best_parents(self):
-        sum_fitness = self.__sum_population_fitness()
-        random_finess_value = random.uniform(0.0, sum_fitness)
+        random_finess_value = random.uniform(0, self.sum_fitness_population)
+        running_sum = 0
 
-        fitness_sum = 0
         for dot in self.dots:
-            fitness_sum += dot.fitness
-            if (fitness_sum > random_finess_value):
+            running_sum += dot.fitness
+            if (running_sum  > random_finess_value):
                 return dot
             
         return None
@@ -72,15 +72,19 @@ class Population:
         return False
 
     def natural_selection(self):
+        new_dots = []
 
         self.__calculate_population_fitness()
 
-        new_dots = []
-        new_dots.append(self.__get_best_dot())
+        best_dot = self.__get_best_dot()
+        if best_dot is not None:
+            new_dots.append(best_dot)
 
-        for _ in self.dots:
+        for _ in range(len(self.dots) -1):
             parent = self.__select_best_parents()
             new_dots.append(parent.reproduce())
+        
+        print(f"new dots {len(new_dots)}")
 
         self.generation += 1
         self.dots = new_dots
