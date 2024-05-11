@@ -48,17 +48,22 @@ class Dot:
         if not self.dead and not self.reached_goal:        
             self.move()
 
+    def get_distance_dot_goal(self, dot_x, dot_y, goal_x, goal_y):
+
+        return math.sqrt((dot_x - goal_x) **2 + (dot_y - goal_y) **2)
+
     def calculate_fitness(self):
-        dot_x, dot_y = self.position[0], self.position[1]
-        goal_x = 400
-        goal_y = 60
-        radius_goal = 8
-        radius_dot = self.dot_width
+        goal_x, goal_y = 300, 50
+        goal_width, goal_height = 200, 15
 
-        # Calcular a distancia entre os Dots e Goal, quanto menor, maior a pontuação
-        distance = math.sqrt((dot_x - goal_x) ** 2 + (dot_y - goal_y) ** 2)
-        self.fitness = distance - radius_dot - radius_goal
+        distance = self.get_distance_dot_goal(self.position[0], self.position[1], (goal_x + goal_width / 2), (goal_y + goal_height / 2))
 
+        distance_fitness = 1 / (distance + 1) # Evitar divisão por zero
+        step_fitness = 1 - (self.brain.step / 1000)
+
+        fitness = distance_fitness * step_fitness
+        return fitness
+    
     def check_edges_collision(self, dot_x, dot_y):
         if (dot_x < 0) or (dot_y < 50) or (dot_y > self.window.get_height()) or (dot_x > self.window.get_width()):
             return True
@@ -66,13 +71,13 @@ class Dot:
             return False
 
     def check_goal_collision(self, dot_x, dot_y):
-        goal_x = 400
-        goal_y = 60
-        radius_goal = 8
-        radius_dot = self.dot_width
 
-        distance = math.sqrt((dot_x - goal_x) ** 2 + (dot_y - goal_y) ** 2)
-        if distance <= radius_goal + radius_dot:
+        goal_x = 300
+        goal_y = 50
+        goal_width = 200
+        goal_height = 15
+
+        if (dot_x > goal_x and dot_x < (goal_x + goal_width)) and (dot_y > goal_y and dot_y < (goal_y + goal_height)):
             return True
         else:
             return False
