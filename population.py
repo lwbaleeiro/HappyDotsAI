@@ -12,25 +12,14 @@ class Population:
         self.qtd_alives = size
         self.qtd_reached_goal = 0
         self.dots = [Dot(window) for _ in range(size)]
-        
-        self.sum_fitness_population = 0
-        self.min_steps = 0
-
-    def __calculate_population_fitness(self):
-        sum_fitness = 0
-        
-        for dot in self.dots:
-            dot.calculate_fitness()
-            sum_fitness += dot.fitness
-
-        self.sum_fitness_population = sum_fitness
+        self.min_steps = 1000 # Mesmo que o brain, alterar depois
     
     def __get_best_dot(self):
         best_dot = max(self.dots, key=lambda dot: (dot.fitness, dot.reached_goal, -dot.brain.step))
         self.best_fitness = best_dot.fitness
         best_dot.is_best = True
         if best_dot.reached_goal:
-            self.min_steps = best_dot.brain.step
+           self.min_steps = best_dot.brain.step
         return best_dot
 
     def __select_best_parents(self):
@@ -45,7 +34,10 @@ class Population:
 
     def update(self):
         for dot in self.dots:
-            dot.update()
+            if dot.brain.step > self.min_steps:
+                dot.dead = True
+            else:
+                dot.update()
 
     def all_dots_dead_or_reached_goal(self):
 
@@ -54,10 +46,10 @@ class Population:
 
         return self.qtd_alives - self.qtd_reached_goal == 0
 
-    def natural_selection(self):
-  
-        self.__calculate_population_fitness()
-        new_dots = [self.__get_best_dot().reproduce()]
+    def natural_selection(self):    
+        best_dot = self.__get_best_dot()
+        new_dots = [best_dot]
+
         for _ in range(self.size - 1):
             parent = self.__select_best_parents()
             parent.brain.mutate()
