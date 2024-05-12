@@ -32,7 +32,9 @@ class Brain:
 
     def mutate(self, mutation_rate = 0.01):
 
-        for i in range(self.size):
-            if np.random.rand() < mutation_rate:
-                random_state = np.random.RandomState()
-                self.directions[i] += random_state.uniform(-1, 1, size = 2)
+        if np.random.rand() < mutation_rate:
+            random_directions = np.empty((self.size, 2))
+            random_angles = np.random.uniform(0, 2 * np.pi, len(random_directions))
+            random_directions[:, 0] = np.cos(random_angles)
+            random_directions[:, 1] = np.sin(random_angles)
+            self.direction = random_directions

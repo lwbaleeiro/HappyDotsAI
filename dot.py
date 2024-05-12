@@ -56,8 +56,8 @@ class Dot:
             color = (0, 0, 0)
             radius = self.dot_radius
         else:
-            color = (0, 128, 0)
-            radius = 6
+            color = (254, 32, 32)
+            radius = 12
 
         pygame.draw.circle(self.window, color, (int(self.position[0]), int(self.position[1])), radius)
 

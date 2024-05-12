@@ -33,7 +33,7 @@ pygame.display.set_caption("Happy Dots AI - Fun Project")
 paused = False
 clock = pygame.time.Clock()
  
-population = Population(window, 5)
+population = Population(window, 100)
 goal = Goal(window)
 
 while True:
