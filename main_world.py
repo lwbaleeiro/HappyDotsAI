@@ -33,7 +33,7 @@ pygame.display.set_caption("Happy Dots AI - Fun Project")
 paused = False
 clock = pygame.time.Clock()
  
-population = Population(window, 100)
+population = Population(window, 2)
 goal = Goal(window)
 
 while True:
@@ -53,7 +53,7 @@ while True:
     show_information(window, population)
 
     if not paused:
-        if population.all_dots_dead_or_reached_goal():
+        if population.all_dots_finished():
             population.natural_selection()
         else:
             population.update()
