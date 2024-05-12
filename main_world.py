@@ -11,7 +11,7 @@ def show_information(window, population):
     text_surface = font.render(f"Generation: {population.generation}", True, BLACK)
     window.blit(text_surface, (10, 15))
 
-    text_surface = font.render(f"Best fitness: {round(population.best_fitness, 5)}", True, BLACK)
+    text_surface = font.render(f"Best fitness: {round(0, 5)}", True, BLACK)
     window.blit(text_surface, (160, 15))
 
     text_surface = font.render(f"Alives: {population.qtd_alives}", True, BLACK)
@@ -33,7 +33,7 @@ pygame.display.set_caption("Happy Dots AI - Fun Project")
 paused = False
 clock = pygame.time.Clock()
  
-population = Population(window, 2)
+population = Population(window, 2000)
 goal = Goal(window)
 
 while True:

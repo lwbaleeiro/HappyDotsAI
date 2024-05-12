@@ -6,7 +6,7 @@ import pygame
 class Dot:
     def __init__(self, window, directions=None):
         self.window = window
-        self.position = [window.get_width() / 2, window.get_height() - 700]
+        self.position = [window.get_width() / 2, window.get_height() - 100]
         self.velocity = np.zeros(2)
         self.acceleration = np.zeros(2)
         self.brain = Brain(directions)
