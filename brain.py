@@ -3,10 +3,14 @@ import random
 
 class Brain:
 
-    def __init__(self, size):
-
-        self.step = 0
-        self.directions = self.randomize_directions(size)
+    def __init__(self, directions = None):
+        
+        self.size = 1000
+        self.step = 0   
+        if directions is None:
+            self.directions = self.randomize_directions(self.size)
+        else:
+            self.directions = directions 
     
     def randomize_directions(self, size):
         random_directions = np.empty((size, 2))
@@ -19,16 +23,16 @@ class Brain:
 
     def get_next_acceleration(self):
         
-        if len(self.directions) > self.step:
+        if self.step < self.size :
             acceleration = self.directions[self.step]
             self.step += 1
             return acceleration
         else:
             return None
 
-    def mutate(self):
-        mutation_rate = 0.01
+    def mutate(self, mutation_rate = 0.01):
 
-        for i in range(len(self.directions)):
-            if random.random() < mutation_rate:
-                self.directions[i] = np.random.uniform(0, 2 * np.pi)
+        for i in range(self.size):
+            if np.random.rand() < mutation_rate:
+                random_state = np.random.RandomState()
+                self.directions[i] += random_state.uniform(-1, 1, size = 2)

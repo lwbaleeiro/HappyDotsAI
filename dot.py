@@ -4,17 +4,18 @@ import math
 from brain import Brain
 
 class Dot:
-    def __init__(self, window):
-        self.dot_radius = 4
+    def __init__(self, window, directions = None):
+
         self.window = window
         self.position = [window.get_width() / 2, window.get_height() - 100]
-        self.velocity = np.array([0.0, 0.0])
-        self.acceleration = np.array([0.0, 0.0])
-        self.brain = Brain(1000)
-        self.max_speed = 3
+        self.velocity = np.zeros(2)
+        self.acceleration = np.zeros(2)
+        self.brain = Brain(directions)
         self.dead = False
         self.reached_goal = False
         self.fitness = 0
+        self.max_speed = 3
+        self.dot_radius = 4
         self.is_best = False
 
     def __check_edges_collision(self, dot_x, dot_y):
@@ -51,10 +52,10 @@ class Dot:
         self.position += self.velocity
 
     def show(self):
-        color = (0, 0, 0)
-        radius = self.dot_radius
-
-        if self.is_best:
+        if not self.is_best:
+            color = (0, 0, 0)
+            radius = self.dot_radius
+        else:
             color = (0, 128, 0)
             radius = 6
 
@@ -76,28 +77,22 @@ class Dot:
         goal_x, goal_y = 300, 50
         goal_width, goal_height = 200, 15
 
-        # 1.0/16.0: Este termo é adicionado como um bônus fixo para recompensar o Dot por alcançar o objetivo, 
-        # podendo ser alterado para melhor pontuação.
-        ##############################################
-        # 10000.0/(float)(brain.step * brain.step): Este termo é inversamente proporcional ao quadrado do número de passos (brain.step * brain.step). 
-        # Isso significa que quanto menos passos o Dot leva para alcançar o objetivo, maior será a aptidão. 
-        # O fator 10000 é usado para garantir que a aptidão seja significativamente afetada pela quantidade de passos, 
-        # proporcionando uma recompensa substancial para Dots que alcançam o objetivo em menos passos.
-
         if self.reached_goal:
             fitness = 1.0 / 16.0 + 10000.0 / (self.brain.step * self.brain.step)
         else:
             distance = self.__get_distance_dot_goal(self.position[0], self.position[1], 
-                                              (goal_x + goal_width / 2), (goal_y + goal_height / 2))
-            fitness = 1.0 / (distance * distance)
+                                            (goal_x + goal_width / 2), (goal_y + goal_height / 2))
+            if distance == 0:
+                fitness = 1.0
+            else:
+                fitness = 1.0 / (distance * distance)
 
         self.fitness = fitness
-        
-    def reproduce(self):
-        new_generation_dot = Dot(self.window)
-        new_generation_dot.brain = self.brain
 
-        return new_generation_dot
+    def reproduce(self):
+        child = Dot(self.window, self.brain.directions)
+        child.brain.step = 0
+        return child
 
         
        

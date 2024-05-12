@@ -9,16 +9,16 @@ def show_information(window, population):
     font = pygame.font.Font(None, 26) 
 
     text_surface = font.render(f"Generation: {population.generation}", True, BLACK)
-    window.blit(text_surface, (10, 15, width, top_panel))
+    window.blit(text_surface, (10, 15))
 
     text_surface = font.render(f"Best fitness: {round(population.best_fitness, 5)}", True, BLACK)
-    window.blit(text_surface, (160, 15, width, top_panel))
+    window.blit(text_surface, (160, 15))
 
     text_surface = font.render(f"Alives: {population.qtd_alives}", True, BLACK)
-    window.blit(text_surface, (450, 15, width, top_panel))
+    window.blit(text_surface, (450, 15))
 
     text_surface = font.render(f"Reached goal: {population.qtd_reached_goal}", True, BLACK)
-    window.blit(text_surface, (600, 15, width, top_panel))
+    window.blit(text_surface, (600, 15))
 
 width = 800
 height = 900
@@ -32,8 +32,8 @@ window = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Happy Dots AI - Fun Project")
 paused = False
 clock = pygame.time.Clock()
-
-population = Population(window, 2) # corrigir bug. não funciona corretamente com numeros impar
+ 
+population = Population(window, 5)
 goal = Goal(window)
 
 while True:
