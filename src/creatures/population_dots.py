@@ -83,6 +83,12 @@ class PopulationDots():
         
         return None
     
+    def all_dead(self):
+        for dot in self.dots:
+            if dot.is_alive == True:
+                return False
+        return True
+    
     def mutate_gene_addition(self, genome):
         """Mutação de adição de gene: adiciona um novo nó ao genoma."""
         # Escolhe uma conexão existente para adicionar um nó

@@ -63,6 +63,7 @@ class SimulationScreen:
                 self.population_dots.check_resource_collision(self.resources_generator.resources)
                 self.population_dots.update(self.resources_generator.resources)
                 self.population_dots.draw(self.screen)
+                paused = self.population_dots.all_dead()
                 self.resources_generator.draw()
 
 
