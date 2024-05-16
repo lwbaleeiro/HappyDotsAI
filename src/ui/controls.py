@@ -2,13 +2,14 @@ import pygame
 import sys
 
 class Controls:
-    def __init__(self, screen, start_button, quit_button, resume_button):
+    def __init__(self, screen, start_button, quit_button, resume_button, restart_button):
         self.screen = screen
         self.start_button = start_button
         self.quit_button = quit_button
         self.resume_button = resume_button
+        self.restart_button = restart_button
 
-    def handle_events(self, game_running, paused, population_dots):
+    def handle_events(self, game_running, paused, restart, population_dots):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -31,8 +32,11 @@ class Controls:
                     if paused:
                         if self.resume_button.collidepoint(event.pos):
                             paused = False
+                        elif self.restart_button.collidepoint(event.pos):
+                            paused = False
+                            restart = True
                         elif self.quit_button.collidepoint(event.pos):
                             pygame.quit()
                             sys.exit()
                             
-        return game_running, paused
+        return game_running, paused, restart

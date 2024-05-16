@@ -1,10 +1,11 @@
 import pygame
 
 class PauseScreen:
-    def __init__(self, screen, resume_button, quit_button):
+    def __init__(self, screen, resume_button, quit_button, restart_button):
         self.screen = screen
         self.resume_button = resume_button
         self.quit_button = quit_button
+        self.restart_button = restart_button
         self.font = pygame.font.Font(None, 36)
 
     def draw(self):
@@ -14,6 +15,7 @@ class PauseScreen:
         self.screen.blit(text, text_rect)
         self.draw_button(self.resume_button, "Continue")
         self.draw_button(self.quit_button, "Quit")
+        self.draw_button(self.restart_button, "Restart")
 
     def draw_button(self, rect, text):
         pygame.draw.rect(self.screen, (255, 255, 255), rect)

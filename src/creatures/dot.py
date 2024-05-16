@@ -25,8 +25,8 @@ class Dot:
         self.distance_traveled = 0
 
         # Atributos comportamentais
-        self.velocity = [random.uniform(-1, 1), random.uniform(-1, 1)]  # Velocidade inicial
-        self.genome = Genome(3,2) # A rede neural do NEAT
+        self.velocity = [0, 0] #[random.uniform(-1, 1), random.uniform(-1, 1)]  # Velocidade inicial
+        self.genome = Genome(3, 3) # A rede neural do NEAT
         self.passive = False  # Indica se o dot é passivo
         self.collide = False  # Flag para colisão
         self.field_of_view = math.pi / 2  # Campo de visão em graus 90*
@@ -45,6 +45,7 @@ class Dot:
 
         # Atributos de colisão
         self.rect = pygame.Rect(self.x - self.radius // 2, self.y - self.radius // 2, self.radius, self.radius)
+        self.nearest_resource = None
 
     def __find_nearest_resource(self, resources):
         nearest_resource = None
@@ -53,7 +54,8 @@ class Dot:
             distance = math.sqrt((self.x - resource.x) ** 2 + (self.y - resource.y) ** 2)
             if distance < self.detection_radius_distance and self.__is_resource_within_field_of_view(resource):
                 nearest_resource = resource
-        return nearest_resource                
+
+        self.nearest_resource = nearest_resource           
 
     def __is_resource_within_field_of_view(self, resource):
         angle_to_resource = math.atan2(resource.y - self.y, resource.x - self.x)
@@ -63,11 +65,12 @@ class Dot:
     def __get_angle(self):
         return math.atan2(self.velocity[1], self.velocity[0])
     
-    def __move_towards(self, resource):
-        angle_to_resource = math.atan2(resource.y - self.y, resource.x - self.x)
-        self.velocity = [self.move_speed * math.cos(angle_to_resource), self.move_speed * math.sin(angle_to_resource)]
-        self.x += self.velocity[0]
-        self.y += self.velocity[1]
+    def __move_towards(self):
+        if self.nearest_resource is not None:
+            angle_to_resource = math.atan2(self.nearest_resource.y - self.y, self.nearest_resource.x - self.x)
+            self.velocity = [self.move_speed * math.cos(angle_to_resource), self.move_speed * math.sin(angle_to_resource)]
+            self.x += self.velocity[0]
+            self.y += self.velocity[1]
 
     def check_resource_collision(self, resources):
         for resource in resources:
@@ -108,12 +111,13 @@ class Dot:
         angle_to_nearest_resource = 0
 
         # Encontra o recurso mais próximo, se houver
-        nearest_resource = self.__find_nearest_resource(resources)
-        if nearest_resource:
+        self.__find_nearest_resource(resources)
+        
+        if self.nearest_resource:
             # Calcula a distância para o recurso mais próximo
-            distance_to_nearest_resource = math.sqrt((self.x - nearest_resource.x) ** 2 + (self.y - nearest_resource.y) ** 2)
+            distance_to_nearest_resource = math.sqrt((self.x - self.nearest_resource.x) ** 2 + (self.y - self.nearest_resource.y) ** 2)
             # Calcula o ângulo para o recurso mais próximo em relação à direção atual do dot
-            angle_to_nearest_resource = math.atan2(nearest_resource.y - self.y, nearest_resource.x - self.x)
+            angle_to_nearest_resource = math.atan2(self.nearest_resource.y - self.y, self.nearest_resource.x - self.x)
 
         # Retorna as informações calculadas como entradas para a rede neural
         return distance_to_nearest_resource, angle_to_nearest_resource, self.energy
@@ -123,14 +127,15 @@ class Dot:
 
         # Calcula as entradas da rede neural
         inputs = self.calculate_inputs(resources)
-        # Processa as entradas na rede neural (ainda a ser implementado)
+
+        # Processa as entradas na rede neural
         neural_outputs = self.genome.feed_forward(inputs)
+
         # Processa as saídas da rede neural e toma decisões com base nelas
         self.process_outputs(neural_outputs)
-        self.move()
 
     def move(self):
-        # Movimenta o dot de acordo com sua velocidade
+        # Movimenta o dot de acordo com sua velocidadeW
         if self.is_alive:
             self.prev_x = self.x
             self.prev_y = self.y
@@ -179,40 +184,17 @@ class Dot:
 
     def process_outputs(self, neural_outputs):
         # Processa as saídas da rede neural e toma decisões com base nelas
-        move_direction = neural_outputs[0]
-        action_decision = neural_outputs[1]
-        
-        # Ajusta a direção de movimento do dot com base na saída da rede neural
-        self.adjust_movement_direction(move_direction)
-        
-        # Determina se o dot deve atacar ou reproduzir com base na saída da rede neural
-        self.decide_action(action_decision)
+        self.velocity[0] = neural_outputs[0]
+        self.velocity[1] = neural_outputs[1]
+        self.move()
 
-    def adjust_movement_direction(self, move_direction):
-        # Ajusta a direção de movimento do dot com base na saída da rede neural
-        # Por exemplo, se a saída for positiva, vira para a direita; se for negativa, vira para a esquerda
-        if move_direction > 0:
-            # Vira para a direita
-            self.rotate_clockwise()
-        elif move_direction < 0:
-            # Vira para a esquerda
-            self.rotate_counter_clockwise()
+        # Determina se o dot deve atacar ou reproduzir com base na saída da rede neural
+        self.decide_action(neural_outputs[2])
 
     def decide_action(self, action_decision):
         # Determina se o dot deve atacar ou reproduzir com base na saída da rede neural
         # Por exemplo, se a saída for positiva, ataca; se for negativa, reproduz
-        # if action_decision > 0:
-        #     # Ataca
-        #     self.attack()
-        # elif action_decision < 0:
-        #     # Reproduz
-        #     self.reproduce()
-        pass
-    
-    def rotate_clockwise(self):
-        # Rotaciona o dot no sentido horário
-        self.velocity = [self.velocity[1], -self.velocity[0]]  # Rotaciona a velocidade no sentido horário
-
-    def rotate_counter_clockwise(self):
-        # Rotaciona o dot no sentido anti-horário
-        self.velocity = [-self.velocity[1], self.velocity[0]]  # Rotaciona a velocidade no sentido anti-horário
+         if round(action_decision) > 0:
+             self.__move_towards()
+         elif round(action_decision) < 0:
+            print("não pegou")
