@@ -1,0 +1,49 @@
+# Arquivos de compilação Python
+*.pyc
+__pycache__/
+
+# Ambiente virtual
+venv/
+env/
+*.env
+
+# Arquivos de configuração
+*.ini
+*.cfg
+*.conf
+
+# Logs e saídas
+*.log
+*.txt
+
+# Arquivos de dados
+*.db
+*.sqlite3
+*.csv
+
+# Arquivos de cache
+.cached
+.cache/
+.cache-* 
+
+# Diretórios de saída
+build/
+dist/
+*.egg-info/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Outros
+*.bak
+*.swp
+*.swo
+*~
+
+# Dependências geradas
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Documentação
+docs/_build/
